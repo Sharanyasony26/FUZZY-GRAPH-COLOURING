@@ -1,0 +1,44 @@
+import java.util.*;
+public class Main {
+    public static void colorFuzzyGraph(int[][] adjMatrix, double[] fuzzyValues, int numColors) {
+        int[] colors = new int[adjMatrix.length];
+        Arrays.fill(colors, -1);
+        PriorityQueue<Integer> pq = new PriorityQueue<Integer>((a,b) -> adjMatrix[b].length - adjMatrix[a].length);
+        for (int i = 0; i < adjMatrix.length; i++) {
+            pq.offer(i);
+        }
+        while (!pq.isEmpty()) {
+            int u = pq.poll();   
+            boolean[] available = new boolean[numColors];
+            Arrays.fill(available, true);
+            for (int v : adjMatrix[u]) {
+                if (colors[v] != -1) {
+                    
+                    if (fuzzyValues[u] >= 0.5) {
+                        available[colors[v]] = false;
+                    }
+                }
+            }
+            for (int i = 0; i < numColors; i++) {
+                if (available[i]) {
+                    colors[u] = i;
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < colors.length; i++) {
+            System.out.println("Vertex " + i + " is colored " + colors[i]);
+        }
+    }
+    public static void main(String[] args) {
+        int[][] adjMatrix = {
+            {1, 2},
+            {0, 2},
+            {0, 1, 3},
+            {2}
+        };
+        double[] fuzzyValues = {0.5, 0.7, 0.3, 0.9};
+        int numColors = 3;
+        colorFuzzyGraph(adjMatrix, fuzzyValues, numColors);
+    }
+}
